@@ -1,0 +1,37 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+df = pd.read_csv("data.csv")
+
+# Skewness Treatment
+
+df['salary_log'] = np.log1p(df['salary'])
+
+# Train-Test Split (Optional)
+
+X = df.drop('target', axis=1)
+y = df['target']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+print("Train-Test Split Completed")
+
+# Train-Test Split (Optional)
+uses;-
+To evaluate model performance on unseen data
+Prevents overfitting
+Note;-
+it is always be splited before the scaling and the encoding
+
+# Skewness Treatment
+skewness reduces the impact of outliers
+iyt also improves the accuracy
+it is divided into two types
+     1) log transformation
+     2)power transformation
+Mimics real-world prediction
+We apply skeness correction when
+*linear regreesion
