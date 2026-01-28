@@ -1,0 +1,64 @@
+import pandas as pd
+import numpy as np
+
+def clean_data(df):
+    # Replace ? with NaN
+    df.replace("?", np.nan, inplace=True)
+
+    # Handle missing values
+    for col in df.select_dtypes(include="object"):
+        df[col].fillna(df[col].mode()[0], inplace=True)
+
+    for col in df.select_dtypes(include=["int64", "float64"]):
+        df[col].fillna(df[col].median(), inplace=True)
+
+    # Fix incorrect data types
+    df["hours-per-week"] = df["hours-per-week"].astype(int)
+
+    # Remove duplicates
+    df.drop_duplicates(inplace=True)
+
+    # Outlier treatment using IQR
+    for col in df.select_dtypes(include=["int64", "float64"]):
+        Q1 = df[col].quantile(0.25)
+        Q3 = df[col].quantile(0.75)
+        IQR = Q3 - Q1
+        df = df[(df[col] >= Q1 - 1.5 * IQR) & (df[col] <= Q3 + 1.5 * IQR)]
+
+    # Drop irrelevant features
+    df.drop(columns=["education"], inplace=True)  # redundant with education-num
+
+    return df
+      
+ ## Common methods to handle missing values
+1. Identify missing values
+df.isnull().sum()
+This tells you how many missing values are in each column.
+
+️2. Remove missing values (Deletion)
+a) Remove rows with missing values
+df.dropna()
+* Good when missing values are very few
+* Risky if data loss is high
+
+b) Remove columns with many missing values
+df.drop(columns=['column_name'])
+Use when a column has too many missing values and is not important.
+
+️3. Fill missing values (Imputation)
+a) Mean (for numerical data)
+df['age'].fillna(df['age'].mean(), inplace=True)
+b) Median (better if data has outliers)
+df['salary'].fillna(df['salary'].median(), inplace=True)
+c) Mode (for categorical data)
+df['gender'].fillna(df['gender'].mode()[0], inplace=True)
+      
+️4. Forward Fill / Backward Fill (Time-series data)
+Forward fill
+df.fillna(method='ffill', inplace=True)
+Backward fill
+df.fillna(method='bfill', inplace=True)
+      
+️5. Replace with a constant value
+df['experience'].fillna(0, inplace=True)
+Useful when 0 
