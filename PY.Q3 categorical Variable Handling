@@ -1,0 +1,71 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder, OrdinalEncoder
+
+df = pd.read_csv("data.csv")
+# One-Hot Encoding
+
+df_onehot = pd.get_dummies(df, columns=['city'], drop_first=True)
+
+# Label Encoding
+le = LabelEncoder()
+df['gender_label'] = le.fit_transform(df['gender'])
+
+# Ordinal Encoding
+ordinal = OrdinalEncoder(categories=[['Low', 'Medium', 'High']])
+df['education_ordinal'] = ordinal.fit_transform(df[['education']])
+
+# Frequency Encoding
+freq_map = df['city'].value_counts(normalize=True)
+df['city_freq'] = df['city'].map(freq_map)
+
+# Target Encoding
+target_mean = df.groupby('city')['salary'].mean()
+df['city_target'] = df['city'].map(target_mean)
+
+print("Categorical Encoding Completed")
+
+#One-Hot Encoding
+When to be used ;-
+Nominal data (no order)
+
+Algorithms like Linear Regression, Logistic Regression
+
+How it works:
+Creates binary columns for each category
+#label encoding
+When to be used;-
+*Binary categories
+
+*tree based models
+
+How it works:
+*Each category on the each unique integer
+#Ordinal Encoding
+When to be used;
+Ordered categories (Low < Medium < High)
+
+How it works
+Assigns numbers based on logical order
+#Ordinal Encoding
+When to use:
+Ordered categories (Low < Medium < High)
+
+How it works:
+*Assigns numbers based on logical order
+#Ordinal Encoding
+When to be use;-
+Ordered categories (Low < Medium < High)
+
+How it works;-
+Assigns numbers based on logical order
+#Target Encoding (Mean Encoding)
+When to be used;-
+Strong relationship between category & target
+
+Common in Kaggle competitions
+
+How it works;-
+Replace category with mean of target variable for that category
+
+
+
